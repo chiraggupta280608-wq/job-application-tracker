@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saved Jobs - JobTracker</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/forms.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <div class="app-container">
+        <!-- Sidebar Shell -->
+        <aside class="sidebar" id="sidebar"></aside>
+
+        <!-- Main Layout -->
+        <main class="main-content">
+            <!-- Topbar Shell -->
+            <header class="top-bar" id="topBar"></header>
+
+            <div class="content-area">
+                <!-- Page Header -->
+                <div class="page-header">
+                    <div class="page-header-text">
+                        <h2>Saved Job Opportunities</h2>
+                        <p>Keep track of exciting job opportunities you want to apply for later.</p>
+                    </div>
+                    <a href="jobs.html" class="btn btn-secondary btn-sm">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        Browse More Jobs
+                    </a>
+                </div>
+
+                <!-- Count Header -->
+                <div style="margin-bottom:18px;display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-size:0.9rem;font-weight:600;color:var(--text-secondary);" id="savedCountHeader">Saved Jobs (0)</span>
+                </div>
+
+                <!-- Saved Jobs Grid -->
+                <div class="jobs-grid" id="savedJobsGrid">
+                    <!-- Populated by JS -->
+                </div>
+
+                <!-- Empty State -->
+                <div id="noSavedJobs" class="empty-state card" style="display:none;margin-top:20px;">
+                    <div class="empty-state-icon">
+                        <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                    </div>
+                    <div class="empty-state-title">No saved jobs yet</div>
+                    <p class="empty-state-desc">Explore open roles and bookmark jobs you're interested in.</p>
+                    <a href="jobs.html" class="btn btn-primary btn-sm">Browse Jobs Now</a>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Job Details Modal -->
+    <div class="modal-backdrop" id="savedJobDetailModal">
+        <div class="modal-box" style="max-width: 650px;">
+            <div class="modal-header">
+                <h3 class="modal-title" id="savedJobModalTitle">Job Details</h3>
+                <button type="button" class="modal-close-btn" onclick="SavedJobsPage.closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="savedJobModalBody">
+                <!-- Injected by JS -->
+            </div>
+            <div class="modal-footer" id="savedJobModalFooter">
+                <!-- Injected by JS -->
+            </div>
+        </div>
+    </div>
+
+    <script src="js/storage.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/saved-jobs.js"></script>
+</body>
+</html>

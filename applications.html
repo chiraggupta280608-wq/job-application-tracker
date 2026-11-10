@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Applications - JobTracker</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/forms.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <div class="app-container">
+        <!-- Sidebar Shell -->
+        <aside class="sidebar" id="sidebar"></aside>
+
+        <!-- Main Layout -->
+        <main class="main-content">
+            <!-- Topbar Shell -->
+            <header class="top-bar" id="topBar"></header>
+
+            <div class="content-area">
+                <!-- Page Header -->
+                <div class="page-header">
+                    <div class="page-header-text">
+                        <h2>My Job Applications</h2>
+                        <p>Track your active application pipeline, status stages, and interviews.</p>
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="ApplicationsPage.openAddApplicationModal()">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        New Application
+                    </button>
+                </div>
+
+                <!-- Search & Filters Toolbar -->
+                <div class="filter-toolbar">
+                    <div class="search-box-wrap">
+                        <svg class="search-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        <input type="text" id="appSearchInput" class="search-input" placeholder="Search by company, position, or notes...">
+                    </div>
+
+                    <select id="filterAppStatus" class="filter-select">
+                        <option value="">All Statuses</option>
+                        <option value="Wishlist">Wishlist</option>
+                        <option value="Applied">Applied</option>
+                        <option value="Under Review">Under Review</option>
+                        <option value="Interview Scheduled">Interview Scheduled</option>
+                        <option value="Assessment">Assessment</option>
+                        <option value="Offer Received">Offer Received</option>
+                        <option value="Accepted">Accepted</option>
+                        <option value="Rejected">Rejected</option>
+                    </select>
+
+                    <select id="sortAppsBy" class="filter-select">
+                        <option value="latest">Applied: Newest First</option>
+                        <option value="oldest">Applied: Oldest First</option>
+                        <option value="company-asc">Company: A to Z</option>
+                        <option value="status">Status Order</option>
+                    </select>
+
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="ApplicationsPage.clearFilters()">Clear</button>
+                </div>
+
+                <!-- Results Count -->
+                <div style="margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-size:0.9rem;font-weight:600;color:var(--text-secondary);" id="appResultsCount">Showing 0 applications</span>
+                </div>
+
+                <!-- Applications Data Table -->
+                <div class="card" style="padding:0;overflow:hidden;">
+                    <div class="table-container" style="border:none;">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Company</th>
+                                    <th>Position</th>
+                                    <th>Applied Date</th>
+                                    <th>Status</th>
+                                    <th>Contact</th>
+                                    <th style="text-align:right;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="applicationsTableBody">
+                                <!-- Rendered by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div id="noApplicationsFound" class="empty-state" style="display:none;padding:48px 20px;">
+                        <div class="empty-state-icon">
+                            <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                        </div>
+                        <div class="empty-state-title">No applications found</div>
+                        <p class="empty-state-desc">Try clearing your filters or create a new job application.</p>
+                        <button class="btn btn-primary btn-sm" onclick="ApplicationsPage.openAddApplicationModal()">Add First Application</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Application View & Status Stepper Modal -->
+    <div class="modal-backdrop" id="viewAppModal">
+        <div class="modal-box" style="max-width: 720px;">
+            <div class="modal-header">
+                <div>
+                    <h3 class="modal-title" id="viewModalCompanyTitle">Application Details</h3>
+                    <p style="font-size:0.85rem;color:var(--text-secondary);margin-top:2px;" id="viewModalAppId">ID: —</p>
+                </div>
+                <button type="button" class="modal-close-btn" onclick="ApplicationsPage.closeViewModal()">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <!-- Status Progression Stepper -->
+                <div style="margin-bottom:20px;">
+                    <label style="font-size:0.75rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:10px;">Application Progression</label>
+                    <div class="stepper-container" id="modalStepperContainer">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Fast Status Change Select -->
+                <div style="background:var(--bg-muted);padding:14px;border-radius:var(--radius-md);margin-bottom:22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+                    <span style="font-weight:600;font-size:0.9rem;">Update Application Status:</span>
+                    <div style="display:flex;gap:8px;">
+                        <select id="quickStatusSelect" class="form-control" style="width:auto;min-width:180px;padding:6px 12px;font-size:0.88rem;">
+                            <option value="Wishlist">Wishlist</option>
+                            <option value="Applied">Applied</option>
+                            <option value="Under Review">Under Review</option>
+                            <option value="Interview Scheduled">Interview Scheduled</option>
+                            <option value="Assessment">Assessment</option>
+                            <option value="Offer Received">Offer Received</option>
+                            <option value="Accepted">Accepted</option>
+                            <option value="Rejected">Rejected</option>
+                        </select>
+                        <button type="button" class="btn btn-primary btn-sm" onclick="ApplicationsPage.updateCurrentStatus()">Update</button>
+                    </div>
+                </div>
+
+                <!-- Details Grid -->
+                <div id="viewAppModalDetails">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <div class="modal-footer" id="viewAppModalFooter">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Application Modal -->
+    <div class="modal-backdrop" id="appModal">
+        <div class="modal-box" style="max-width: 660px;">
+            <div class="modal-header">
+                <h3 class="modal-title" id="appModalTitle">Add Application</h3>
+                <button type="button" class="modal-close-btn" onclick="ApplicationsPage.closeAppModal()">&times;</button>
+            </div>
+
+            <form id="appForm" novalidate>
+                <div class="modal-body form-layout">
+                    <input type="hidden" id="formAppId">
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="appCompanyName">Company Name <span class="required-star">*</span></label>
+                            <input type="text" id="appCompanyName" class="form-control" placeholder="e.g. Google" required>
+                            <div class="form-feedback error-feedback" id="appCompanyNameError"></div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="appJobTitle">Job Position / Title <span class="required-star">*</span></label>
+                            <input type="text" id="appJobTitle" class="form-control" placeholder="e.g. Frontend Engineer" required>
+                            <div class="form-feedback error-feedback" id="appJobTitleError"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="appDate">Application Date <span class="required-star">*</span></label>
+                            <input type="date" id="appDate" class="form-control" required>
+                            <div class="form-feedback error-feedback" id="appDateError"></div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="appStatus">Current Status <span class="required-star">*</span></label>
+                            <select id="appStatus" class="form-control" required>
+                                <option value="Wishlist">Wishlist</option>
+                                <option value="Applied" selected>Applied</option>
+                                <option value="Under Review">Under Review</option>
+                                <option value="Interview Scheduled">Interview Scheduled</option>
+                                <option value="Assessment">Assessment</option>
+                                <option value="Offer Received">Offer Received</option>
+                                <option value="Accepted">Accepted</option>
+                                <option value="Rejected">Rejected</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="appJobDesc">Job Description Summary</label>
+                        <textarea id="appJobDesc" class="form-control" placeholder="Key responsibilities and expectations..."></textarea>
+                    </div>
+
+                    <div style="font-weight:700;font-size:0.9rem;margin-top:6px;color:var(--text-primary);border-bottom:1px solid var(--border-color);padding-bottom:6px;">
+                        Company Contact Information
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="appContactName">Contact / Recruiter Name</label>
+                            <input type="text" id="appContactName" class="form-control" placeholder="e.g. Sarah Jenkins">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="appContactEmail">Contact Email</label>
+                            <input type="email" id="appContactEmail" class="form-control" placeholder="recruiter@company.com">
+                            <div class="form-feedback error-feedback" id="appContactEmailError"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="appContactPhone">Contact Phone Number</label>
+                        <input type="tel" id="appContactPhone" class="form-control" placeholder="+1 (555) 000-0000">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="appNotes">Application Notes</label>
+                        <textarea id="appNotes" class="form-control" placeholder="Interview tips, referral info, salary discussed..."></textarea>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="ApplicationsPage.closeAppModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="saveAppBtn">Save Application</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/storage.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/applications.js"></script>
+</body>
+</html>
+
