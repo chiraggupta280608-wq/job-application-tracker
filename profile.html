@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile & Resume - JobTracker</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/forms.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <div class="app-container">
+        <!-- Sidebar Shell -->
+        <aside class="sidebar" id="sidebar"></aside>
+
+        <!-- Main Layout -->
+        <main class="main-content">
+            <!-- Topbar Shell -->
+            <header class="top-bar" id="topBar"></header>
+
+            <div class="content-area">
+                <!-- Page Header with Profile Cover & Avatar -->
+                <div class="card" style="padding:0;overflow:hidden;margin-bottom:28px;">
+                    <div class="profile-cover">
+                        <div class="profile-avatar-giant" id="profileInitials">JD</div>
+                    </div>
+                    <div style="padding: 0 32px 28px; display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:16px;">
+                        <div>
+                            <h2 style="font-size:1.6rem;font-weight:800;color:var(--text-primary);" id="profileHeaderName">User Name</h2>
+                            <p style="color:var(--text-secondary);font-size:0.95rem;margin-top:2px;" id="profileHeaderEmail">user@example.com</p>
+                        </div>
+                        <div style="display:flex;gap:12px;">
+                            <button type="button" class="btn btn-secondary btn-sm" id="editToggleBtn" onclick="ProfilePage.toggleEditMode()">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                                <span id="editBtnLabel">Edit Profile</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabs: Profile Info vs. Resume Vault -->
+                <div class="tabs-nav">
+                    <button class="tab-btn active" data-tab="tab-details" onclick="ProfilePage.switchTab('tab-details')">Profile Details</button>
+                    <button class="tab-btn" data-tab="tab-resume" onclick="ProfilePage.switchTab('tab-resume')">Resume Management</button>
+                </div>
+
+                <!-- Tab 1: Profile Details (View & Edit Modes) -->
+                <div class="tab-content active" id="tab-details">
+                    <!-- Read-Only View Mode -->
+                    <div id="profileViewMode" class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Professional Information</h3>
+                        </div>
+
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:28px;">
+                            <div>
+                                <label style="font-size:0.75rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;">Full Name</label>
+                                <div style="font-size:1.05rem;font-weight:600;margin-top:4px;" id="viewFullName">—</div>
+                            </div>
+                            <div>
+                                <label style="font-size:0.75rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;">Email Address</label>
+                                <div style="font-size:1.05rem;font-weight:600;margin-top:4px;" id="viewEmail">—</div>
+                            </div>
+                            <div>
+                                <label style="font-size:0.75rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;">Phone Number</label>
+                                <div style="font-size:1.05rem;font-weight:600;margin-top:4px;" id="viewPhone">—</div>
+                            </div>
+                            <div>
+                                <label style="font-size:0.75rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;">Location</label>
+                                <div style="font-size:1.05rem;font-weight:600;margin-top:4px;" id="viewLocation">—</div>
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom:28px;">
+                            <label style="font-size:0.75rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:8px;">Core Skills</label>
+                            <div class="skills-tags-wrap" id="viewSkills">
+                                <!-- Tag chips inserted by JS -->
+                            </div>
+                        </div>
+
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:28px;">
+                            <div>
+                                <label style="font-size:0.75rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;">LinkedIn Profile</label>
+                                <div style="margin-top:6px;" id="viewLinkedIn">—</div>
+                            </div>
+                            <div>
+                                <label style="font-size:0.75rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;">Portfolio / Website</label>
+                                <div style="margin-top:6px;" id="viewPortfolio">—</div>
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom:24px;">
+                            <label style="font-size:0.75rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;">Education Details</label>
+                            <div style="margin-top:6px;font-size:0.95rem;line-height:1.6;background:var(--bg-muted);padding:14px;border-radius:var(--radius-md);white-space:pre-line;" id="viewEducation">—</div>
+                        </div>
+
+                        <div>
+                            <label style="font-size:0.75rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;">Experience Background</label>
+                            <div style="margin-top:6px;font-size:0.95rem;line-height:1.6;background:var(--bg-muted);padding:14px;border-radius:var(--radius-md);white-space:pre-line;" id="viewExperience">—</div>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Edit Mode Form -->
+                    <div id="profileEditMode" class="card" style="display:none;">
+                        <div class="card-header">
+                            <h3 class="card-title">Edit Profile Information</h3>
+                        </div>
+
+                        <form id="profileForm" class="form-layout" novalidate>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label" for="editFullName">Full Name <span class="required-star">*</span></label>
+                                    <input type="text" id="editFullName" class="form-control" required>
+                                    <div class="form-feedback error-feedback" id="editFullNameError"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="editEmail">Email Address (Read-only)</label>
+                                    <input type="email" id="editEmail" class="form-control" readonly style="opacity:0.8;cursor:not-allowed;">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label" for="editPhone">Phone Number</label>
+                                    <input type="tel" id="editPhone" class="form-control" placeholder="+1 (555) 000-0000">
+                                    <div class="form-feedback error-feedback" id="editPhoneError"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="editLocation">Location / City</label>
+                                    <input type="text" id="editLocation" class="form-control" placeholder="San Francisco, CA">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Skills (Type and press Enter or comma)</label>
+                                <div class="tag-input-container" id="skillsTagContainer">
+                                    <!-- Skill tags inserted here -->
+                                    <input type="text" id="skillTextInput" class="tag-text-input" placeholder="e.g. JavaScript, Python, React...">
+                                </div>
+                                <small style="color:var(--text-muted);font-size:0.8rem;margin-top:4px;">Press Enter or comma to add a skill tag.</small>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label" for="editLinkedIn">LinkedIn URL</label>
+                                    <input type="url" id="editLinkedIn" class="form-control" placeholder="https://linkedin.com/in/username">
+                                    <div class="form-feedback error-feedback" id="editLinkedInError"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="editPortfolio">Portfolio URL</label>
+                                    <input type="url" id="editPortfolio" class="form-control" placeholder="https://myportfolio.com">
+                                    <div class="form-feedback error-feedback" id="editPortfolioError"></div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="editEducation">Education Details</label>
+                                <textarea id="editEducation" class="form-control" placeholder="Degree, Institution, Year of Graduation..."></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="editExperience">Work Experience</label>
+                                <textarea id="editExperience" class="form-control" placeholder="Previous job titles, companies, achievements..."></textarea>
+                            </div>
+
+                            <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:10px;">
+                                <button type="button" class="btn btn-secondary" onclick="ProfilePage.cancelEdit()">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Save Profile</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Tab 2: Resume Management -->
+                <div class="tab-content" id="tab-resume">
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <h3 class="card-title">PDF Resume Management</h3>
+                                <p style="font-size:0.88rem;color:var(--text-secondary);margin-top:4px;">Upload and preview your latest PDF resume.</p>
+                            </div>
+                        </div>
+
+                        <!-- Current Resume Status Box -->
+                        <div id="resumeStatusBox" style="margin-bottom:28px;">
+                            <!-- Injected by JS -->
+                        </div>
+
+                        <!-- Dropzone Upload Area -->
+                        <div class="dropzone-area" id="resumeDropzone" onclick="document.getElementById('resumeFileInput').click()">
+                            <input type="file" id="resumeFileInput" accept=".pdf,application/pdf" style="display:none;">
+                            <div class="dropzone-icon">
+                                <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                            </div>
+                            <div class="dropzone-title">Click to upload or drag & drop your resume</div>
+                            <div class="dropzone-subtitle">Supported format: PDF only (Max 5MB)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/storage.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/profile.js"></script>
+</body>
+</html>
+

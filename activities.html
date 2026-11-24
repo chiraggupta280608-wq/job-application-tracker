@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activity History - JobTracker</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/forms.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <div class="app-container">
+        <!-- Sidebar Shell -->
+        <aside class="sidebar" id="sidebar"></aside>
+
+        <!-- Main Layout -->
+        <main class="main-content">
+            <!-- Topbar Shell -->
+            <header class="top-bar" id="topBar"></header>
+
+            <div class="content-area">
+                <!-- Page Header -->
+                <div class="page-header">
+                    <div class="page-header-text">
+                        <h2>Interaction Timeline</h2>
+                        <p>Keep a chronological log of recruiter phone calls, interview loops, emails, and assessments.</p>
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="ActivitiesPage.openAddActivityModal()">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        Log Activity
+                    </button>
+                </div>
+
+                <!-- Filter Toolbar -->
+                <div class="filter-toolbar">
+                    <div class="search-box-wrap">
+                        <svg class="search-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        <input type="text" id="activitySearchInput" class="search-input" placeholder="Search title or notes...">
+                    </div>
+
+                    <select id="filterActivityType" class="filter-select">
+                        <option value="">All Interaction Types</option>
+                        <option value="Recruiter Calls">Recruiter Calls</option>
+                        <option value="Interview Details">Interview Details</option>
+                        <option value="Emails Sent">Emails Sent</option>
+                        <option value="Follow-up Dates">Follow-up Dates</option>
+                        <option value="Assessment Updates">Assessment Updates</option>
+                        <option value="Company Meetings">Company Meetings</option>
+                        <option value="Personal Notes">Personal Notes</option>
+                    </select>
+
+                    <select id="filterAppRelated" class="filter-select">
+                        <option value="">All Applications</option>
+                        <!-- Populated dynamically -->
+                    </select>
+
+                    <select id="sortActivitiesBy" class="filter-select">
+                        <option value="latest">Newest First</option>
+                        <option value="oldest">Oldest First</option>
+                    </select>
+
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="ActivitiesPage.clearFilters()">Clear</button>
+                </div>
+
+                <!-- Timeline Container -->
+                <div class="timeline" id="activitiesTimeline">
+                    <!-- Populated by JS -->
+                </div>
+
+                <!-- Empty State -->
+                <div id="noActivitiesFound" class="empty-state card" style="display:none;margin-top:20px;">
+                    <div class="empty-state-icon">
+                        <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    </div>
+                    <div class="empty-state-title">No interaction history found</div>
+                    <p class="empty-state-desc">Log your first recruiter call, interview round, or personal notes.</p>
+                    <button class="btn btn-primary btn-sm" onclick="ActivitiesPage.openAddActivityModal()">Log First Activity</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit Activity Modal -->
+    <div class="modal-backdrop" id="activityModal">
+        <div class="modal-box" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3 class="modal-title" id="activityModalTitle">Log Interaction Activity</h3>
+                <button type="button" class="modal-close-btn" onclick="ActivitiesPage.closeActivityModal()">&times;</button>
+            </div>
+            <form id="activityForm" novalidate>
+                <div class="modal-body form-layout">
+                    <input type="hidden" id="activityId">
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="activityType">Activity Type <span class="required-star">*</span></label>
+                            <select id="activityType" class="form-control" required>
+                                <option value="Recruiter Calls">Recruiter Call</option>
+                                <option value="Interview Details">Interview Details</option>
+                                <option value="Emails Sent">Emails Sent</option>
+                                <option value="Follow-up Dates">Follow-up Date</option>
+                                <option value="Assessment Updates">Assessment Update</option>
+                                <option value="Company Meetings">Company Meeting</option>
+                                <option value="Personal Notes">Personal Note</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="activityDate">Date <span class="required-star">*</span></label>
+                            <input type="date" id="activityDate" class="form-control" required>
+                            <div class="form-feedback error-feedback" id="activityDateError"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="relatedAppSelect">Associated Job Application (Optional)</label>
+                        <select id="relatedAppSelect" class="form-control">
+                            <option value="">General / Not tied to an application</option>
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="activityTitle">Activity Title / Subject <span class="required-star">*</span></label>
+                        <input type="text" id="activityTitle" class="form-control" placeholder="e.g. Phone Screen with Recruiter" required>
+                        <div class="form-feedback error-feedback" id="activityTitleError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="activityDescription">Details & Discussion Notes <span class="required-star">*</span></label>
+                        <textarea id="activityDescription" class="form-control" placeholder="Key topics covered, questions asked, next steps..." required></textarea>
+                        <div class="form-feedback error-feedback" id="activityDescriptionError"></div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="ActivitiesPage.closeActivityModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="saveActivityBtn">Save Activity</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/storage.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/activities.js"></script>
+</body>
+</html>
+
